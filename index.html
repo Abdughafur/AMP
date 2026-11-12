@@ -1,112 +1,548 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AMP</title>
-  <link rel="stylesheet" href="style.css">
-  <link rel="shortcut icon" href="logo.jpeg" type="image/x-icon">
-</head>
-
-<body id="main-body">
-
-  <div id="drop-overlay">
-    <h1>Drop Music to Add</h1>
-  </div>
-
-  <div class="player-card">
-    <div class="album-art"><svg viewBox="0 0 24 24">
-        <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z" />
-      </svg></div>
-    <div class="track-info">
-      <h2 id="title">AMP</h2>
-      <p id="artist">Abdu Music Player</p>
-    </div>
-
-    <div class="slider-wrap">
-      <input type="range" id="progress" value="0" step="0.1">
-      <div class="time-labels"><span id="current-time">0:00</span><span id="duration">0:00</span></div>
-    </div>
-
-    <div class="controls">
-      <div class="btn-svg" id="repeat-btn"><svg width="22" height="22" viewBox="0 0 24 24">
-          <path d="M7 7h10v3l4-4-4-4v3H5v6h2V7zm10 10H7v-3l-4 4 4 4v-3h12v-6h-2v4zM13 15V9h-1l-2 1v1h1v4h2z" />
-        </svg></div>
-      <div class="btn-svg" onclick="skip(-10)"><svg width="26" height="26" viewBox="0 0 24 24">
-          <path d="M11 18V6l-8.5 6 8.5 6zm.5-6l8.5 6V6l-8.5 6z" />
-        </svg></div>
-      <div class="btn-svg" id="play-btn"><svg id="play-icon" width="55" height="55" viewBox="0 0 24 24">
-          <path d="M8 5v14l11-7z" />
-        </svg></div>
-      <div class="btn-svg" onclick="skip(10)"><svg width="26" height="26" viewBox="0 0 24 24">
-          <path d="M4 18l8.5-6L4 6v12zm9-12v12l8.5-6L13 6z" />
-        </svg></div>
-      <div class="btn-svg" onclick="toggleFS()"><svg width="22" height="22" viewBox="0 0 24 24">
-          <path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z" />
-        </svg></div>
-    </div>
-
-    <div style="display:flex; gap:10px; justify-content:center;">
-      <button class="action-btn" onclick="document.getElementById('file-input').click()"
-        style="background:var(--accent); border:none">+ Add</button>
-      <button class="action-btn" onclick="openModal('about-modal')">About</button>
-    </div>
-  </div>
-
-  <div class="library-wrapper">
-    <div class="library-header">
-      <span>SONGS</span>
-      <span class="clear-btn" onclick="openModal('confirm-all-modal')">Delete All</span>
-    </div>
-    <div id="library-list"></div>
-  </div>
-
-  <div class="modal-overlay" id="about-modal">
-    <div class="modal-card">
-      <h3>AMP</h3>
-      <h1>Created by Abdughafur</h1>
-      <p style="font-size:14px; opacity:0.6">Version 1.0.0</p>
-      <a href="https://github.com/Abdughafur/AMP" target="_blank"
-        style="text-decoration:none; color:white; display:block; margin: 20px 0;">
-        <div style="background:#fff; color:#000; padding:12px; border-radius:15px; font-weight:700">GitHub repository
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
+    <meta name="theme-color" content="#111116" />
+    <meta
+      name="description"
+      content="A private, offline-first music player for your personal library."
+    />
+    <title>AMP — Abdu Music Player</title>
+    <link rel="manifest" href="./manifest.webmanifest" />
+    <link rel="icon" href="./logo.jpeg" type="image/jpeg" />
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar" aria-label="Main navigation">
+        <div class="sidebar-brand-row">
+          <a class="brand" href="./" aria-label="AMP home">
+            <img src="./logo.jpeg" alt="" width="38" height="38" />
+            <span><strong>AMP</strong><small>YOUR MUSIC, YOUR SPACE</small></span>
+          </a>
+          <button class="icon-button collapse-button" type="button" data-action="toggle-sidebar" aria-label="Collapse sidebar" aria-pressed="false">‹</button>
         </div>
-      </a>
-      <a href="https://github.com/Abdughafur" target="_blank"
-        style="text-decoration:none; color:white; display:block; margin: 20px 0;">
-        <div style="background:#fff; color:#000; padding:12px; border-radius:15px; font-weight:700">GitHub profile
+        <nav class="primary-nav" id="primary-nav">
+          <p class="nav-label">MENU</p>
+          <button class="nav-link is-active" data-page="home">
+            <span class="nav-symbol">⌂</span>Home
+          </button>
+          <button class="nav-link" data-page="library">
+            <span class="nav-symbol">♫</span>Library
+          </button>
+          <button class="nav-link" data-page="playlists">
+            <span class="nav-symbol">▤</span>Playlists
+          </button>
+          <button class="nav-link" data-page="albums">
+            <span class="nav-symbol">▣</span>Albums
+          </button>
+          <button class="nav-link" data-page="artists">
+            <span class="nav-symbol">♙</span>Artists
+          </button>
+          <p class="nav-label nav-label-spaced">YOUR COLLECTION</p>
+          <button class="nav-link" data-page="favorites">
+            <span class="nav-symbol">♡</span>Favorites
+          </button>
+          <button class="nav-link" data-page="recent">
+            <span class="nav-symbol">◷</span>Recently played
+          </button>
+          <button class="nav-link" data-page="settings">
+            <span class="nav-symbol">⚙</span>Settings
+          </button>
+        </nav>
+        <div class="sidebar-bottom">
+          <div class="offline-card">
+            <span class="connection-dot" id="connection-dot"></span>
+            <span><strong id="connection-title">Checking status…</strong><small id="connection-label">Local library available</small></span>
+          </div>
+          <div class="storage-card">
+            <div class="storage-card-heading"><span>Storage</span><strong id="storage-percent">—</strong></div>
+            <progress id="storage-progress" max="100" value="0" aria-label="Browser storage used"></progress>
+            <small id="storage-label">Checking browser storage…</small>
+          </div>
+          <div class="version-card"><span class="version-star">✦</span><span><strong>AMP 2.0</strong><small>Music stays yours.</small></span></div>
         </div>
-      </a>
-      <button class="m-btn cancel" onclick="closeModals()">Close</button>
-    </div>
-  </div>
+      </aside>
 
-  <div class="modal-overlay" id="confirm-single-modal">
-    <div class="modal-card">
-      <h3 style="color:var(--danger); margin-bottom:10px">Delete Song?</h3>
-      <p id="delete-song-name" style="font-size:14px; margin-bottom:20px; color:white; font-weight:600"></p>
-      <div class="modal-btns">
-        <button class="m-btn confirm" onclick="executeDelete()">Delete From Local</button>
-        <button class="m-btn cancel" onclick="closeModals()">Keep Song</button>
+      <main class="main-content">
+        <header class="topbar">
+          <div class="page-heading">
+            <p class="eyebrow">YOUR PERSONAL MUSIC SPACE</p>
+            <h1 id="page-title">Good evening</h1>
+          </div>
+          <div class="topbar-actions">
+            <label class="search-box">
+              <span aria-hidden="true">⌕</span>
+              <input
+                id="search-input"
+                type="search"
+                placeholder="Search your music…"
+                autocomplete="off"
+                aria-label="Search tracks"
+              />
+              <kbd>/</kbd>
+            </label>
+            <button class="icon-button theme-toggle" type="button" data-action="toggle-theme" aria-label="Switch color theme">☼</button>
+            <button
+              class="button button-primary"
+              id="import-button"
+              type="button"
+            >
+              <span aria-hidden="true">＋</span> Add music
+            </button>
+            <button
+              class="icon-button install-button"
+              id="install-button"
+              type="button"
+              hidden
+              aria-label="Install AMP"
+            >
+              ⇩
+            </button>
+          </div>
+        </header>
+
+        <section
+          id="page-content"
+          class="page-content"
+          aria-live="polite"
+        ></section>
+      </main>
+
+      <aside
+        class="queue-panel"
+        id="queue-panel"
+        aria-label="Playback queue"
+        hidden
+      >
+        <div class="panel-heading">
+          <div>
+            <p class="eyebrow">UP NEXT</p>
+            <h2>Queue</h2>
+          </div>
+          <button
+            class="icon-button"
+            type="button"
+            data-action="close-queue"
+            aria-label="Close queue"
+          >
+            ×
+          </button>
+        </div>
+        <p class="queue-count" id="queue-count"></p>
+        <ol class="queue-list" id="queue-list"></ol>
+        <button
+          class="button button-quiet clear-queue"
+          type="button"
+          data-action="clear-queue"
+        >
+          Clear queue
+        </button>
+      </aside>
+
+      <footer class="player-dock" aria-label="Music player">
+        <div class="dock-track">
+          <div
+            class="artwork artwork-small"
+            id="dock-artwork"
+            aria-hidden="true"
+          >
+            <span>♫</span>
+          </div>
+          <div class="dock-track-copy">
+            <strong id="dock-title">Nothing playing</strong>
+            <span id="dock-artist">Add music to begin</span>
+          </div>
+          <button
+            class="icon-button favorite-button"
+            type="button"
+            data-action="toggle-current-favorite"
+            aria-label="Add current track to favorites"
+          >
+            ♡
+          </button>
+        </div>
+
+        <div class="dock-center">
+          <div class="transport-controls">
+            <button
+              class="icon-button mode-button"
+              type="button"
+              data-action="shuffle"
+              aria-label="Toggle shuffle"
+              aria-pressed="false"
+            >
+              ⤨
+            </button>
+            <button
+              class="icon-button"
+              type="button"
+              data-action="previous"
+              aria-label="Previous track"
+            >
+              |◀
+            </button>
+            <button
+              class="play-button"
+              id="play-button"
+              type="button"
+              data-action="play-pause"
+              aria-label="Play"
+            >
+              ▶
+            </button>
+            <button
+              class="icon-button"
+              type="button"
+              data-action="next"
+              aria-label="Next track"
+            >
+              ▶|
+            </button>
+            <button
+              class="icon-button mode-button"
+              type="button"
+              data-action="repeat"
+              aria-label="Repeat off"
+              aria-pressed="false"
+            >
+              ↻
+            </button>
+          </div>
+          <div class="seek-row">
+            <time id="current-time">0:00</time>
+            <input
+              id="seek-input"
+              type="range"
+              min="0"
+              max="1000"
+              value="0"
+              aria-label="Seek through track"
+              disabled
+            />
+            <time id="duration-time">0:00</time>
+          </div>
+        </div>
+
+        <div class="dock-tools">
+          <button
+            class="icon-button queue-toggle"
+            type="button"
+            data-action="toggle-queue"
+            aria-label="Open queue"
+          >
+            ☷
+          </button>
+          <label class="volume-control">
+            <button
+              class="icon-button"
+              id="mute-button"
+              type="button"
+              data-action="mute"
+              aria-label="Mute"
+            >
+              ◖
+            </button>
+            <input
+              id="volume-input"
+              type="range"
+              min="0"
+              max="1"
+              step="0.01"
+              value="0.8"
+              aria-label="Volume"
+            />
+          </label>
+          <select id="speed-select" aria-label="Playback speed">
+            <option value="0.75">0.75×</option>
+            <option value="1" selected>1×</option>
+            <option value="1.25">1.25×</option>
+            <option value="1.5">1.5×</option>
+            <option value="2">2×</option>
+          </select>
+          <button
+            class="icon-button now-playing-toggle"
+            type="button"
+            data-action="toggle-now-playing"
+            aria-label="Open now playing"
+          >
+            ⛶
+          </button>
+        </div>
+      </footer>
+
+      <nav class="mobile-nav" aria-label="Mobile navigation">
+        <button class="nav-link is-active" data-page="home">
+          <span class="nav-symbol">⌂</span>Home
+        </button>
+        <button class="nav-link" data-page="library">
+          <span class="nav-symbol">♫</span>Library
+        </button>
+        <button class="nav-link" data-page="playlists">
+          <span class="nav-symbol">▤</span>Playlists
+        </button>
+        <button class="nav-link" data-page="favorites">
+          <span class="nav-symbol">♡</span>Favorites
+        </button>
+        <button class="nav-link" data-page="settings">
+          <span class="nav-symbol">⚙</span>Settings
+        </button>
+      </nav>
+    </div>
+
+    <section
+      class="now-playing-screen"
+      id="now-playing-screen"
+      hidden
+      aria-label="Now playing"
+    >
+      <button
+        class="icon-button now-playing-close"
+        type="button"
+        data-action="close-now-playing"
+        aria-label="Close now playing"
+      >
+        ⌄
+      </button>
+      <div class="artwork artwork-large" id="large-artwork" aria-hidden="true">
+        <span>♫</span>
+      </div>
+      <div class="now-playing-copy">
+        <p class="eyebrow">NOW PLAYING</p>
+        <h2 id="large-title">Nothing playing</h2>
+        <p id="large-artist">Your library is waiting</p>
+      </div>
+      <div class="visualizer-wrap">
+        <canvas
+          id="visualizer"
+          aria-label="Audio spectrum visualizer"
+          hidden
+        ></canvas
+        ><button
+          class="button button-quiet"
+          type="button"
+          data-action="toggle-visualizer"
+        >
+          Show visualizer
+        </button>
+      </div>
+      <div class="lyrics-panel" id="lyrics-panel">
+        <p>Lyrics are stored locally with your tracks.</p>
+        <button
+          class="button button-quiet"
+          type="button"
+          data-action="edit-lyrics"
+        >
+          Add lyrics
+        </button>
+      </div>
+      <div class="now-playing-controls">
+        <div class="seek-row">
+          <time id="large-current-time">0:00</time
+          ><input
+            id="large-seek-input"
+            type="range"
+            min="0"
+            max="1000"
+            value="0"
+            aria-label="Seek through track"
+          /><time id="large-duration-time">0:00</time>
+        </div>
+        <div class="transport-controls">
+          <button
+            class="icon-button"
+            type="button"
+            data-action="previous"
+            aria-label="Previous track"
+          >
+            |◀</button
+          ><button
+            class="play-button"
+            type="button"
+            data-action="play-pause"
+            aria-label="Play"
+          >
+            ▶</button
+          ><button
+            class="icon-button"
+            type="button"
+            data-action="next"
+            aria-label="Next track"
+          >
+            ▶|
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <dialog id="playlist-dialog" class="app-dialog">
+      <form method="dialog" id="playlist-form">
+        <div class="dialog-heading">
+          <div>
+            <p class="eyebrow">YOUR COLLECTION</p>
+            <h2 id="playlist-dialog-title">New playlist</h2>
+          </div>
+          <button class="icon-button" value="cancel" aria-label="Close">
+            ×
+          </button>
+        </div>
+        <label class="field-label" for="playlist-name">Name</label
+        ><input id="playlist-name" maxlength="80" required />
+        <label class="field-label" for="playlist-description">Description</label
+        ><textarea
+          id="playlist-description"
+          rows="3"
+          maxlength="300"
+        ></textarea>
+        <div class="dialog-actions">
+          <button class="button button-quiet" value="cancel">Cancel</button
+          ><button
+            class="button button-primary"
+            id="save-playlist-button"
+            value="save"
+          >
+            Save playlist
+          </button>
+        </div>
+      </form>
+    </dialog>
+
+    <dialog id="lyrics-dialog" class="app-dialog">
+      <form method="dialog" id="lyrics-form">
+        <div class="dialog-heading">
+          <div>
+            <p class="eyebrow">LOCAL LYRICS</p>
+            <h2>Edit lyrics</h2>
+          </div>
+          <button class="icon-button" value="cancel" aria-label="Close">
+            ×
+          </button>
+        </div>
+        <label class="field-label" for="lyrics-input"
+          >Lyrics for this track</label
+        ><textarea id="lyrics-input" rows="12"></textarea>
+        <div class="dialog-actions">
+          <button class="button button-quiet" value="cancel">Cancel</button
+          ><button
+            class="button button-primary"
+            id="save-lyrics-button"
+            value="save"
+          >
+            Save lyrics
+          </button>
+        </div>
+      </form>
+    </dialog>
+
+    <dialog id="metadata-dialog" class="app-dialog">
+      <form method="dialog" id="metadata-form">
+        <div class="dialog-heading">
+          <div>
+            <p class="eyebrow">TRACK DETAILS</p>
+            <h2>Edit metadata</h2>
+          </div>
+          <button class="icon-button" value="cancel" aria-label="Close">
+            ×
+          </button>
+        </div>
+        <label class="field-label" for="metadata-title">Title</label
+        ><input id="metadata-title" maxlength="160" required />
+        <label class="field-label" for="metadata-artist">Artist</label
+        ><input id="metadata-artist" maxlength="160" />
+        <label class="field-label" for="metadata-album">Album</label
+        ><input id="metadata-album" maxlength="160" />
+        <div class="dialog-actions">
+          <button class="button button-quiet" value="cancel">Cancel</button
+          ><button class="button button-primary" value="save">
+            Save details
+          </button>
+        </div>
+      </form>
+    </dialog>
+
+    <dialog id="add-tracks-dialog" class="app-dialog">
+      <form method="dialog" id="add-tracks-form">
+        <div class="dialog-heading">
+          <div>
+            <p class="eyebrow">PLAYLIST</p>
+            <h2>Add tracks</h2>
+          </div>
+          <button class="icon-button" value="cancel" aria-label="Close">
+            ×
+          </button>
+        </div>
+        <div id="add-tracks-list" class="add-tracks-list"></div>
+        <div class="dialog-actions">
+          <button class="button button-quiet" value="cancel">Cancel</button
+          ><button class="button button-primary" value="add">
+            Add selected
+          </button>
+        </div>
+      </form>
+    </dialog>
+
+    <dialog id="confirm-dialog" class="app-dialog">
+      <form method="dialog" id="confirm-form">
+        <div class="dialog-heading">
+          <div>
+            <p class="eyebrow">PLEASE CONFIRM</p>
+            <h2 id="confirm-title">Remove track?</h2>
+          </div>
+          <button class="icon-button" value="cancel" aria-label="Close">
+            ×
+          </button>
+        </div>
+        <p id="confirm-message" class="dialog-message"></p>
+        <div class="dialog-actions">
+          <button class="button button-quiet" value="cancel">Cancel</button
+          ><button
+            class="button button-danger"
+            id="confirm-accept"
+            value="confirm"
+          >
+            Remove
+          </button>
+        </div>
+      </form>
+    </dialog>
+
+    <input
+      id="audio-files"
+      type="file"
+      accept="audio/*,.mp3,.m4a,.aac,.wav,.ogg,.oga,.flac,.mp4"
+      multiple
+      hidden
+    />
+    <input
+      id="backup-file"
+      type="file"
+      accept="application/json,.json"
+      hidden
+    />
+    <input
+      id="playlist-file"
+      type="file"
+      accept="application/json,.json,.ampplaylist"
+      hidden
+    />
+    <div class="drop-overlay" id="drop-overlay" hidden>
+      <div>
+        <span class="drop-icon">♫</span
+        ><strong>Drop music to add it to your library</strong
+        ><span>Audio stays on this device.</span>
       </div>
     </div>
-  </div>
-
-  <div class="modal-overlay" id="confirm-all-modal">
-    <div class="modal-card">
-      <h3 style="color:var(--danger)">Delete All Songs?</h3>
-      <p style="font-size:14px; opacity:0.7">This will remove every song from your browser storage permanently.</p>
-      <div class="modal-btns">
-        <button class="m-btn confirm" onclick="wipeLibrary()">Yes, Delete All</button>
-        <button class="m-btn cancel" onclick="closeModals()">Cancel</button>
-      </div>
-    </div>
-  </div>
-
-  <audio id="audio-player"></audio>
-  <input type="file" id="file-input" accept=".mp3, .m4a" multiple>
-
-  <script src="app.js"></script>
-</body>
-
+    <div
+      class="toast-region"
+      id="toast-region"
+      aria-live="polite"
+      aria-atomic="true"
+    ></div>
+    <audio id="audio-player" preload="metadata"></audio>
+    <script type="module" src="./app.js"></script>
+  </body>
 </html>

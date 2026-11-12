@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>AMP browser tests</title>
+    <style>
+      body{margin:0;padding:24px;background:#101014;color:#f5f5f7;font:14px/1.5 system-ui,sans-serif}
+      main{max-width:760px;margin:auto}h1{font-size:24px}
+      li{margin:8px 0;padding:10px;border-radius:8px;background:#1a1a20}
+      .pass{color:#8be0ad}.fail{color:#ff858b}pre{white-space:pre-wrap;color:#aaa}
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>AMP browser tests</h1>
+      <p>These plain-browser checks use the browser’s native IndexedDB and audio APIs.</p>
+      <ol id="results"></ol>
+      <pre id="summary" aria-live="polite">Running tests…</pre>
+    </main>
+    <script type="module" src="./test-runner.js"></script>
+  </body>
+</html>

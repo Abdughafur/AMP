@@ -1,0 +1,21 @@
+{
+  "id": "./",
+  "name": "AMP — Abdu Music Player",
+  "short_name": "AMP",
+  "description": "A private, offline-first music player for your personal library.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#101014",
+  "theme_color": "#111116",
+  "categories": ["music", "entertainment"],
+  "icons": [
+    {
+      "src": "./icons/amp-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

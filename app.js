@@ -29,18 +29,30 @@ function renderList() {
     if (cursor) {
       const item = document.createElement("div");
       item.className = `library-item ${cursor.value.name === currentPlaying ? "active" : ""}`;
-      item.innerHTML = `
-                    <span>${cursor.value.name}</span>
-                    <div class="del-icon">
-                        <svg width="18" height="18" viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
-                    </div>
-                `;
+      const name = cursor.value.name;
+      const label = document.createElement("span");
+      label.textContent = name;
+
+      const deleteIcon = document.createElement("div");
+      deleteIcon.className = "del-icon";
+      const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+      svg.setAttribute("width", "18");
+      svg.setAttribute("height", "18");
+      svg.setAttribute("viewBox", "0 0 24 24");
+      const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+      path.setAttribute(
+        "d",
+        "M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z",
+      );
+      svg.appendChild(path);
+      deleteIcon.appendChild(svg);
+      item.append(label, deleteIcon);
+
       const d = cursor.value.data;
-      const n = cursor.value.name;
-      item.onclick = () => playSong(d, n);
+      item.onclick = () => playSong(d, name);
       item.querySelector(".del-icon").onclick = (ev) => {
         ev.stopPropagation();
-        requestDelete(n);
+        requestDelete(name);
       };
       listEl.appendChild(item);
       cursor.continue();
